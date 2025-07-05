@@ -3,6 +3,9 @@ import adminRoutes from './routes/admin.routes';
 import dotenv from 'dotenv';
 import sequelize from './config/database';
 import './models/User';
+import './models/Products';
+import './models/Category';
+
 
 //Cargando variables de entorno
 dotenv.config();
@@ -21,7 +24,7 @@ const start = async () => {
     console.log('✅ Conexión a la base de datos exitosa.');
     
     // usa force: true solo para borrar y regrear
-    await sequelize.sync({ alter: true }); 
+    await sequelize.sync({ force: true }); 
     console.log('✅ Modelos sincronizados con la base de datos.');
 
 
