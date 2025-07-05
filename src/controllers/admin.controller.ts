@@ -1,9 +1,13 @@
 import { Request, Response } from 'express';
 import bcrypt from 'bcrypt';
+import dotenv from 'dotenv';
+import  jwt  from 'jsonwebtoken';
 import User from '../models/User';
 import { isEmailValid } from '../utils/utils';
-import { where } from 'sequelize';
 
+
+dotenv.config();
+const JWT_SECRET = process.env.JWT_SECRET;
 
 export const createUser = async (req: Request, res: Response): Promise<Response> => {
     try {
@@ -30,10 +34,10 @@ export const createUser = async (req: Request, res: Response): Promise<Response>
         //Verificar si el username y email ya estan en uso
         const existingUsername = await User.findOne({ where: { username } });
         if (existingUsername) {
-        return res.status(400).json({
-            status: "error",
-            message: "Username already in use."
-        });
+            return res.status(400).json({
+                status: "error",
+                message: "Username already in use."
+            });
         }
 
         const existingEmail = await User.findOne({ where: { email } });
@@ -65,3 +69,46 @@ export const createUser = async (req: Request, res: Response): Promise<Response>
     }
    
 };
+
+export const getToken = async(req: Request, res:Response): Promise<Response> =>{
+    try {
+        const { username, password} = req.body;
+        if (!username || !password) {
+            
+            return res.status(400).json({
+                status: "error",
+                message: "The username and password fields are required."
+            });
+        }
+        //Verificar si el user existe
+        const userExists = await User.findOne({ where: { username } });
+        if (!userExists) {
+            return res.status(404).json({
+                status: "error",
+                message: "Username not found."
+            });
+        }
+        //Comprobar contraseña
+        if(!bcrypt.compare(password, userExists!.password)){
+            return res.status(401).json({
+                status: "error",
+                message: "Password Incorrect."
+            });
+        }
+        const payload = {
+          id: userExists!.id,
+          username: userExists!.username
+        }
+        
+        //Generamos Token
+        const token = jwt.sign(payload,JWT_SECRET!,{ expiresIn: '12h' } ); 
+        return res.status(200).json({status:'success', token, username:userExists!.username})
+
+    } catch (error) {
+        return res.status(500).json({
+                status: "error",
+                message: "Server Error.",
+                error
+        });
+    }
+}
