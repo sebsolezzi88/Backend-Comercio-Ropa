@@ -27,16 +27,21 @@ export const createUser = async (req: Request, res: Response): Promise<Response>
             });
         }
 
-        //Verificar si el username ya esta en uso
-        const existUser = await User.findOne({where:{username}});
+        //Verificar si el username y email ya estan en uso
+        const existingUsername = await User.findOne({ where: { username } });
+        if (existingUsername) {
+        return res.status(400).json({
+            status: "error",
+            message: "Username already in use."
+        });
+        }
 
-        if(existUser){
-
+        const existingEmail = await User.findOne({ where: { email } });
+        if (existingEmail) {
             return res.status(400).json({
                 status: "error",
-                message: "The username and email are already in use."
+                message: "Email already in use."
             });
-            
         }
 
         //Crear el usuario
@@ -44,7 +49,7 @@ export const createUser = async (req: Request, res: Response): Promise<Response>
         await User.create({
             username:username,
             password:hashPassoword,
-            email: email
+            email: email 
         })
         
         return res.status(201).json({
