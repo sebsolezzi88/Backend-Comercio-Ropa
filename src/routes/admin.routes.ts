@@ -1,9 +1,8 @@
-import { Router,Response,Request } from "express";
+import { Router} from "express";
+import { createUser } from "../controllers/admin.controller";
 
 const router = Router();
 
-router.get('/', (req:Request,res:Response)=>{
-    res.send('listo');
-} );
+router.post('/', createUser);
 
 export default router;
