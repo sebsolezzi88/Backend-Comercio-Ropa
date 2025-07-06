@@ -8,6 +8,7 @@ interface ProductAttributes {
   id: number;
   name: string; // Ej: "Remera Roja", "Pantalón Azul"
   description?: string; // Opcional: para una descripción más detallada
+  urlImage: string;
   categoryId: number; // Clave foránea para la categoría
 }
 
@@ -21,6 +22,7 @@ class Product
   public id!: number;
   public name!: string;
   public description?: string;
+  public urlImage!: string;
   public categoryId!: number;
 
   // Timestamps automáticos
@@ -43,6 +45,10 @@ Product.init(
     description: {
       type: DataTypes.TEXT, // Tipo TEXT para descripciones largas
       allowNull: true,
+    },
+    urlImage:{
+      type: DataTypes.TEXT,
+      allowNull: false,
     },
     categoryId: {
       type: DataTypes.INTEGER.UNSIGNED,
