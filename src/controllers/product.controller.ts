@@ -35,7 +35,22 @@ export const getProduct = async (req: Request, res: Response): Promise<Response>
 }
 
 export const getProducts = async (req: Request, res: Response): Promise<Response> =>{
-        return res.send('listo');
+        try {
+            const products = await Product.findAll();
+            
+            return res.status(200).json({
+                    status: "success",
+                    message: "Product created.",
+                    products: products
+            });
+
+        } catch (error) {
+            return res.status(500).json({
+                status: "error",
+                message: "Server Error.",
+                error
+            });
+        }
 }
 
 export const updateProduct = async (req: Request, res: Response): Promise<Response> =>{
