@@ -9,7 +9,7 @@ export const addProduct = async (req: Request, res: Response): Promise<Response>
             if(!name || !description || !urlImage || !categoryId){
                 return res.status(400).json({ 
                     status: 'error', 
-                    message: 'name, description, urlImage and categoryId are required.';
+                    message: 'name, description, urlImage and categoryId are required.'
                  });
             }
 
