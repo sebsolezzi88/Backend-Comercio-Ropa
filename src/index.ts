@@ -1,5 +1,6 @@
 import express,{type Express} from 'express';
 import adminRoutes from './routes/admin.routes';
+import categoryRoutes from './routes/category.routes';
 import dotenv from 'dotenv';
 import sequelize from './config/database';
 import './models/User';
@@ -17,6 +18,7 @@ app.use(express.json());
 
 //Añadiendo las rutas de admina
 app.use('/admin',adminRoutes);
+app.use('/category',categoryRoutes);
 
 const start = async () => {
   try {
