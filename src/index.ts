@@ -26,7 +26,7 @@ const start = async () => {
     console.log('✅ Conexión a la base de datos exitosa.');
     
     // usa force: true solo para borrar y regrear
-    await sequelize.sync({ force: true }); 
+    await sequelize.sync({ alter: true }); 
     console.log('✅ Modelos sincronizados con la base de datos.');
 
 
