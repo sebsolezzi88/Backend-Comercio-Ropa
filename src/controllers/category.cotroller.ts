@@ -35,7 +35,42 @@ export const addCategory = async (req:Request,res:Response):Promise<Response> =>
 }
 
 export const updateCategory = async (req:Request,res:Response):Promise<Response> =>{
-    return res.send('listo');
+    try {
+        const id = req.params.id;
+        const newName = req.body.name;
+        if (!id) {
+            return res.status(400).json({ status: 'error', message: 'Id is required' });
+        }
+        if (!newName) {
+            return res.status(400).json({ status: 'error', message: 'The new name of category is required' });
+        }
+        const categoryExists = await Category.findByPk(id);
+        
+        if(!categoryExists){
+            return res.status(404).json({
+                status: "error",
+                message: "Category not Found.",
+                
+            });
+        }
+        
+        //Actualizamos la categoria
+        categoryExists.name = newName;
+        await categoryExists.save()
+        
+        return res.status(200).json({
+                status: "success",
+                message: "Category updated.",
+                category :categoryExists
+        }); 
+   
+    } catch (error) {
+         return res.status(500).json({
+                status: "error",
+                message: "Server Error.",
+                error
+        });
+   }
 }
 
 export const deleteCategory = async (req:Request,res:Response):Promise<Response> =>{

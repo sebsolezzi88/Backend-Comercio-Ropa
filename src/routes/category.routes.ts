@@ -8,6 +8,6 @@ const router = Router();
 router.get('/',getCategories); //Obtener categorias
 router.post('/',verifyToken ,addCategory); //Crear categoria
 router.delete('/:id',verifyToken,deleteCategory) //Borra categoria
-router.put('/',verifyToken,updateCategory) //Actualizar categoria
+router.put('/:id',verifyToken,updateCategory) //Actualizar categoria
 
 export default router;
