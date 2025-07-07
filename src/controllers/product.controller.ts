@@ -18,7 +18,7 @@ export const addProduct = async (req: Request, res: Response): Promise<Response>
 
             return res.status(201).json({
                     status: "success",
-                    message: "Product created.",
+                    message: "Products founds.",
                     product: newProduct
             });
        } catch (error) {
@@ -31,7 +31,27 @@ export const addProduct = async (req: Request, res: Response): Promise<Response>
 }
 
 export const getProduct = async (req: Request, res: Response): Promise<Response> =>{
-        return res.send('listo');
+        try {
+                const id = req.params.id;
+                
+           if (!id) {
+              return res.status(400).json({ status: 'error', message: 'Id is required' });
+            }
+            const product = await Product.findByPk(id);
+            
+            return res.status(200).json({
+                    status: "success",
+                    message: "Product found.",
+                    product 
+            });
+
+        } catch (error) {
+            return res.status(500).json({
+                status: "error",
+                message: "Server Error.",
+                error
+            });
+        }
 }
 
 export const getProducts = async (req: Request, res: Response): Promise<Response> =>{
@@ -54,7 +74,50 @@ export const getProducts = async (req: Request, res: Response): Promise<Response
 }
 
 export const updateProduct = async (req: Request, res: Response): Promise<Response> =>{
-        return res.send('listo');
+        try {
+            const id = req.params.id;
+            const {name, description,urlImage,categoryId} = req.body;
+
+            if (!id) {
+              return res.status(400).json({ status: 'error', message: 'Id is required' });
+            }
+
+            if(!name || !description || !urlImage || !categoryId){
+                return res.status(400).json({ 
+                    status: 'error', 
+                    message: 'name, description, urlImage and categoryId are required.'
+                 });
+            }
+                
+           
+            const productExits = await Product.findByPk(id);
+
+            
+            
+            if(!productExits) {
+                    return res.status(404).json({ status: 'error', message: 'Product not found' });
+                }
+            //Moficicamos el producto
+            productExits.name = name;
+            productExits.description = description;
+            productExits.urlImage = urlImage;
+            productExits.categoryId = categoryId;
+
+            await productExits.save();
+            
+            return res.status(200).json({
+                    status: "success",
+                    message: "Product updated.",
+                    product:productExits 
+            });
+
+        } catch (error) {
+            return res.status(500).json({
+                status: "error",
+                message: "Server Error.",
+                error
+            });
+        }
 }
 
 export const deleteProduct = async (req: Request, res: Response): Promise<Response> =>{
