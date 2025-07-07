@@ -35,9 +35,27 @@ export const addVariant = async (req: Request, res: Response): Promise<Response>
 
 export const getVariant = async (req: Request, res: Response): Promise<Response> =>{
        
-        try {
+         try {
            
-            return res.send('listo');
+            const id = req.params.id;
+
+            if (!id) {
+              return res.status(400).json({ status: 'error', message: 'Id is required' });
+            }
+
+            //Buscamos el producto variante
+            const productVariantExist = await ProductVariant.findByPk(id);
+
+            if(!productVariantExist){
+                return res.status(404).json({ status: 'error', message: 'Product variant not found' });
+            }
+
+            return res.status(200).json({
+                    status: "success",
+                    message: "Product Variant found.",
+                    productVariant: productVariantExist
+            });
+            
        } catch (error) {
             return res.status(500).json({
                     status: "error",
@@ -80,7 +98,7 @@ export const updateVariant = async (req: Request, res: Response): Promise<Respon
 
             await productVariantExist.save();
 
-            return res.status(201).json({
+            return res.status(200).json({
                     status: "success",
                     message: "Product Variant updated.",
                     productVariant: productVariantExist
@@ -132,14 +150,30 @@ export const deleteVariant = async (req: Request, res: Response): Promise<Respon
 
 export const getVariantsByProduct = async (req: Request, res: Response): Promise<Response> =>{
        
-        try {
-           
-            return res.send('listo');
-       } catch (error) {
-            return res.status(500).json({
-                    status: "error",
-                    message: "Server Error.",
-                    error
-            });
-       }
+    const { productId } = req.params;
+
+  try {
+    const variants = await ProductVariant.findAll({
+      where: { productId },
+      order: [['size', 'ASC']], //ordena por tamaño
+    });
+
+    if (!variants.length) {
+      return res.status(404).json({
+        status: "error",
+        message: "No variants found for this product.",
+      });
+    }
+
+    return res.status(200).json({
+      status: "success",
+      variants,
+    });
+  } catch (error) {
+    console.error("Error fetching product variants:", error);
+    return res.status(500).json({
+      status: "error",
+      message: "Server error fetching variants.",
+    });
+  }
 }
