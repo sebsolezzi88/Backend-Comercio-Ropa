@@ -98,9 +98,29 @@ export const updateVariant = async (req: Request, res: Response): Promise<Respon
 
 export const deleteVariant = async (req: Request, res: Response): Promise<Response> =>{
        
+       
         try {
            
-            return res.send('listo');
+            const id = req.params.id;
+
+            if (!id) {
+              return res.status(400).json({ status: 'error', message: 'Id is required' });
+            }
+
+            //Buscamos el producto variante
+            const productVariantExist = await ProductVariant.findByPk(id);
+
+            if(!productVariantExist){
+                return res.status(404).json({ status: 'error', message: 'Product variant not found' });
+            }
+
+            await productVariantExist.destroy();
+
+            return res.status(200).json({
+                    status: "success",
+                    message: "Product Variant deleted.",
+            });
+            
        } catch (error) {
             return res.status(500).json({
                     status: "error",
