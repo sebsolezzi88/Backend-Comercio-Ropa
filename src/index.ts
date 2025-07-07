@@ -8,6 +8,8 @@ import sequelize from './config/database';
 import './models/User';
 import './models/Products';
 import './models/Category';
+import './models/Order';
+import './models/OrderItem';
 
 
 //Cargando variables de entorno

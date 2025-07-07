@@ -57,6 +57,8 @@ Product.init(
         model: Category, // Referencia al modelo Category
         key: "id", // Clave en Category a la que se refiere
       },
+      onDelete: "CASCADE",
+      onUpdate: "CASCADE",
     },
   },
   {
@@ -110,6 +112,8 @@ ProductVariant.init(
         model: Product, // Referencia al modelo Product
         key: "id",
       },
+      onDelete: "CASCADE",
+      onUpdate: "CASCADE",
     },
     size: {
       type: DataTypes.STRING(20), // Para talles como "S", "M", "L", "XL", "38", "40"
