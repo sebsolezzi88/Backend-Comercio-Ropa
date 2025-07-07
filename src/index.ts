@@ -3,6 +3,7 @@ import adminRoutes from './routes/admin.routes';
 import categoryRoutes from './routes/category.routes';
 import productRoutes  from './routes/product.routes';
 import variantRoutes from './routes/variant.routes';
+import orderRoutes from './routes/order.routes';
 import dotenv from 'dotenv';
 import sequelize from './config/database';
 import './models/User';
@@ -24,7 +25,8 @@ app.use(express.json());
 app.use('/admin',adminRoutes); //Rutas de admin
 app.use('/category',categoryRoutes); //Rutas categoria
 app.use('/product',productRoutes); //Rutas de productos
-app.use('/variant',variantRoutes) //Rutas de los variantes de los productos
+app.use('/variant',variantRoutes); //Rutas de los variantes de los productos
+app.use('/order',orderRoutes); //Rutas para las ordenes
 
 const start = async () => {
   try {
