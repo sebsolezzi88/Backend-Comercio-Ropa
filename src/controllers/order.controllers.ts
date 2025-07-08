@@ -95,6 +95,7 @@ export const createOrder = async (req: Request, res: Response): Promise<Response
     await t.commit();
 
     return res.status(201).json({
+      status:"success",
       message: "Order created",
       code: order.code,
       orderId: order.id,
@@ -103,7 +104,7 @@ export const createOrder = async (req: Request, res: Response): Promise<Response
   } catch (error) {
     await t.rollback();
     console.error(error);
-    return res.status(500).json({ message: "Error al crear la orden", error });
+    return res.status(500).json({ status:"error", message: "Error al crear la orden", error });
   }
 };
 
@@ -159,7 +160,26 @@ export const deleteOrder = async (req: Request, res: Response): Promise<Response
 
 export const updateStatusOrder = async (req: Request, res: Response): Promise<Response> =>{
     try {
-        return res.send('listo')
+          const id = req.params.id;
+                
+          if (!id) {
+            return res.status(400).json({ status: 'error', message: 'Id is required' });
+          }
+          const orderExist = await Order.findByPk(id);
+
+          if(!orderExist){
+            return res.status(404).json({ status:"error", message: "Order not found." });
+          }
+
+          //cambiar el estado
+          orderExist.completed = !orderExist.completed;
+
+          await orderExist.save();
+
+        return res.status(200).json({
+            status:"success",
+            message: "Order status chage",
+        });
     } catch (error) {
         return res.status(500).json({
                     status: "error",
