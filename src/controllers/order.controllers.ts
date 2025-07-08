@@ -19,8 +19,8 @@ import sequelize from '../config/database';
   ]
 }
 */
-export const createOrder = async (req: Request, res: Response): Promise<Response> =>{
-    const t = await sequelize.transaction();
+export const createOrder = async (req: Request, res: Response): Promise<Response> => {
+  const t = await sequelize.transaction();
 
   try {
     const {
@@ -35,32 +35,39 @@ export const createOrder = async (req: Request, res: Response): Promise<Response
       return res.status(400).json({ message: "The order must have at least one item." });
     }
 
-    // Calcular precio total
+    // Calcular precio total y preparar los datos para OrderItems
     let totalPrice = 0;
+    const orderItemsData: any[] = [];
 
     for (const item of items) {
-        const variant = await ProductVariant.findByPk(item.productVariantId, { transaction: t });
-        if (!variant) throw new Error(`Variant with ID${item.productVariantId} not found.`);
+      const variant = await ProductVariant.findByPk(item.productVariantId, { transaction: t });
+      if (!variant) throw new Error(`Variant with ID ${item.productVariantId} not found.`);
 
-        // Verificar que haya stock suficiente
-        if (variant.stock < item.quantity) {
-            throw new Error(`Insufficient stock for the variant with ID ${item.productVariantId}`);
-        }
+      if (variant.stock < item.quantity) {
+        throw new Error(`Insufficient stock for the variant with ID ${item.productVariantId}`);
+      }
 
-        // Calcular precio total
-        totalPrice += Number(variant.price) * item.quantity;
+      const itemPrice = Number(variant.price);
+      totalPrice += itemPrice * item.quantity;
 
-        // Reducir stock
-        variant.stock -= item.quantity;
-        await variant.save({ transaction: t });
+      // Bajar el stock
+      variant.stock -= item.quantity;
+      await variant.save({ transaction: t });
+
+      // Preparar datos del item
+      orderItemsData.push({
+        productVariantId: item.productVariantId,
+        quantity: item.quantity,
+        price: itemPrice,
+      });
     }
 
     // Generar código único
     let code = generateOrderCode();
-    let existing = await Order.findOne({ where: { code } });
+    let existing = await Order.findOne({ where: { code }, transaction: t });
     while (existing) {
       code = generateOrderCode();
-      existing = await Order.findOne({ where: { code } });
+      existing = await Order.findOne({ where: { code }, transaction: t });
     }
 
     // Crear orden
@@ -77,29 +84,28 @@ export const createOrder = async (req: Request, res: Response): Promise<Response
       { transaction: t }
     );
 
-    // Crear OrderItems
-    const orderItemsData = items.map((item: any) => ({
-      orderId: order.id,
-      productVariantId: item.productVariantId,
-      quantity: item.quantity,
-      price: item.price, 
-    }));
+    // Asignar orderId a cada item
+    for (const item of orderItemsData) {
+      item.orderId = order.id;
+    }
 
+    // Crear los items
     await OrderItem.bulkCreate(orderItemsData, { transaction: t });
 
     await t.commit();
 
     return res.status(201).json({
-      message: "Orden created",
+      message: "Order created",
       code: order.code,
       orderId: order.id,
     });
+
   } catch (error) {
     await t.rollback();
     console.error(error);
     return res.status(500).json({ message: "Error al crear la orden", error });
   }
-}
+};
 
 
 export const getOrders = async (req: Request, res: Response): Promise<Response> =>{
