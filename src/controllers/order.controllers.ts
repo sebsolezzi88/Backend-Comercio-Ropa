@@ -150,7 +150,38 @@ export const getOrders = async (req: Request, res: Response): Promise<Response> 
 
 export const getOrderByCode = async (req: Request, res: Response): Promise<Response> =>{
     try {
-        return res.send('listo')
+          const code = req.params.code;
+                
+          if (!code) {
+            return res.status(400).json({ status: 'error', message: 'The code is required' });
+          }
+          
+          const orderExist = await Order.findOne({
+              where: { code },
+              include: [
+                {
+                  model: OrderItem,
+                  as: "orderItems",
+                  include: [
+                    {
+                      model: ProductVariant,
+                      as: "variant",
+                      include: [{ model: Product, as: "product" }],
+                    },
+                  ],
+                },
+              ],
+            });
+
+          if(!orderExist){
+            return res.status(404).json({ status:"error", message: "Order not found." });
+          }
+
+        return res.status(200).json({
+            status:"success",
+            message: "Order found.",
+            order: orderExist
+        });
     } catch (error) {
         return res.status(500).json({
                     status: "error",
