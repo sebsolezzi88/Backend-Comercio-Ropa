@@ -2,7 +2,7 @@ import {Request,Response} from 'express'
 import OrderItem from '../models/OrderItem';
 import Order from '../models/Order';
 import { generateOrderCode } from '../utils/utils';
-import { ProductVariant } from '../models/Products';
+import { Product, ProductVariant } from '../models/Products';
 import sequelize from '../config/database';
 
 
@@ -134,8 +134,38 @@ export const getOrderByCode = async (req: Request, res: Response): Promise<Respo
 }
 
 export const getOrderById = async (req: Request, res: Response): Promise<Response> =>{
-    try {
-        return res.send('listo')
+     try {
+          const id = req.params.id;
+                
+          if (!id) {
+            return res.status(400).json({ status: 'error', message: 'Id is required' });
+          }
+          
+        const orderExist = await Order.findByPk(id, {
+        include: [
+          {
+            model: OrderItem,
+            as: "orderItems",
+            include: [
+              {
+                model: ProductVariant,
+                as: "variant",
+                include: [{ model: Product, as: "product" }],
+              },
+            ],
+          },
+        ],
+      });
+
+          if(!orderExist){
+            return res.status(404).json({ status:"error", message: "Order not found." });
+          }
+
+        return res.status(200).json({
+            status:"success",
+            message: "Order found.",
+            order: orderExist
+        });
     } catch (error) {
         return res.status(500).json({
                     status: "error",

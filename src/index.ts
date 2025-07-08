@@ -11,6 +11,7 @@ import './models/Products';
 import './models/Category';
 import './models/Order';
 import './models/OrderItem';
+import './models/index';
 
 
 //Cargando variables de entorno

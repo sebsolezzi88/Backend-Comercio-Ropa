@@ -1,6 +1,7 @@
 import { DataTypes, Model, Optional } from "sequelize";
 import sequelize from "../config/database";
 import Category from "./Category"; // Importamos el modelo Category
+import OrderItem from "./OrderItem";
 
 // --- Modelo Product ---
 // Definimos atributos del modelo Product
@@ -143,23 +144,6 @@ ProductVariant.init(
   }
 );
 
-// --- Definir las asociaciones (relaciones) ---
-Product.hasMany(ProductVariant, {
-  foreignKey: "productId",
-  as: "variants", // Alias para cuando recuperes las variantes de un producto
-});
-ProductVariant.belongsTo(Product, {
-  foreignKey: "productId",
-  as: "product", // Alias para cuando recuperes el producto de una variante
-});
 
-Product.belongsTo(Category, {
-  foreignKey: "categoryId",
-  as: "category",
-});
-Category.hasMany(Product, {
-  foreignKey: "categoryId",
-  as: "products",
-});
 
 export { Product, ProductVariant }; // Exportamos ambos modelos

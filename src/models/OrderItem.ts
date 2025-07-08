@@ -47,17 +47,6 @@ OrderItem.init(
   }
 );
 
-// Asociaciones
-Order.belongsToMany(ProductVariant, {
-  through: OrderItem,
-  foreignKey: "orderId",
-  as: "items",
-});
 
-ProductVariant.belongsToMany(Order, {
-  through: OrderItem,
-  foreignKey: "productVariantId",
-  as: "orders",
-});
 
 export default OrderItem;
