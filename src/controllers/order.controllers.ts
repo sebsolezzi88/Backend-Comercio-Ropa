@@ -2,8 +2,10 @@ import {Request,Response} from 'express'
 import OrderItem from '../models/OrderItem';
 import Order from '../models/Order';
 import { generateOrderCode } from '../utils/utils';
-import { Product, ProductVariant } from '../models/Products';
+
 import sequelize from '../config/database';
+import ProductVariant from '../models/ProductVariant';
+import Product from '../models/Products';
 
 
 /* 

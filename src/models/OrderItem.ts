@@ -1,7 +1,8 @@
 import { DataTypes, Model, Optional } from "sequelize";
 import sequelize from "../config/database";
-import { ProductVariant } from "./Products";
+
 import Order from "./Order";
+import ProductVariant from "./ProductVariant";
 
 class OrderItem extends Model {
   public orderId!: number;

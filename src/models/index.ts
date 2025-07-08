@@ -1,11 +1,13 @@
 import OrderItem from "./OrderItem";
-import { ProductVariant, Product } from "./Products";
 import Order from "./Order";
+import ProductVariant from "./ProductVariant";
+import Product from "./Products";
 import Category from "./Category";
 
-// Asociaciones
 Order.hasMany(OrderItem, { foreignKey: 'orderId', as: 'orderItems' });
 OrderItem.belongsTo(Order, { foreignKey: 'orderId' });
+
+OrderItem.belongsTo(ProductVariant, { as: 'variant', foreignKey: 'productVariantId' }); // ← FALTA
 
 Order.belongsToMany(ProductVariant, {
   through: OrderItem,

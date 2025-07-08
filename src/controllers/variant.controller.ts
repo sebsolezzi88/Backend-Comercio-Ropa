@@ -1,5 +1,6 @@
 import { Request,Response } from "express";
-import { ProductVariant } from "../models/Products";
+import ProductVariant from "../models/ProductVariant";
+
 
 
 export const addVariant = async (req: Request, res: Response): Promise<Response> =>{

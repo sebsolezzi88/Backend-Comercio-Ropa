@@ -1,7 +1,7 @@
 import { Router} from "express";
 import { verifyToken } from "../middlewares/authMiddleware";
 import { addProduct, deleteProduct, getProduct, getProducts, updateProduct } from "../controllers/product.controller";
-import { Product } from "../models/Products";
+
 
 const router = Router();
 

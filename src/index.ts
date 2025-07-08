@@ -8,6 +8,7 @@ import dotenv from 'dotenv';
 import sequelize from './config/database';
 import './models/User';
 import './models/Products';
+import './models/ProductVariant';
 import './models/Category';
 import './models/Order';
 import './models/OrderItem';
