@@ -8,17 +8,24 @@ import { isEmailValid } from '../utils/utils';
 
 dotenv.config();
 const JWT_SECRET = process.env.JWT_SECRET;
+const PASSWORD_AUTH = process.env.PASSWORD_SECRET_AUTH;
 
 export const createUser = async (req: Request, res: Response): Promise<Response> => {
     try {
 
-        const { username, password, passwordr, email } = req.body;
+        const { username, password, passwordr, email, passwordAuth  } = req.body;
 
-        if (!username || !password || !passwordr ||!email) {
+        if (!username || !password || !passwordr ||!email || !passwordAuth) {
             
             return res.status(400).json({
                 status: "error",
-                message: "The username, password,passwordr and email fields are required."
+                message: "The username, password,passwordr, email passwordAuth fields are required."
+            });
+        }
+        if(PASSWORD_AUTH !== passwordAuth){
+            return res.status(400).json({
+                status: "error",
+                message: "Incorrect authentication password."
             });
         }
         if (!isEmailValid(email)) {
