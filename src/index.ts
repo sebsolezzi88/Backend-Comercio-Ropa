@@ -1,4 +1,5 @@
 import express,{type Express} from 'express';
+import cors from 'cors';
 import adminRoutes from './routes/admin.routes';
 import categoryRoutes from './routes/category.routes';
 import productRoutes  from './routes/product.routes';
@@ -22,6 +23,7 @@ const app: Express = express();
 const port = process.env.PORT ||3000;
 
 app.use(express.json());
+app.use(cors());
 
 
 app.use('/admin',adminRoutes); //Rutas de admin
