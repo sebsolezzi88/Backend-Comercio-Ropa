@@ -95,8 +95,10 @@ export const getToken = async(req: Request, res:Response): Promise<Response> =>{
                 message: "Username not found."
             });
         }
-        //Comprobar contraseña
-        if(!bcrypt.compare(password, userExists!.password)){
+        // Verifica la contraseña
+        const isPasswordCorrect = await bcrypt.compare(password, userExists!.password);
+
+        if (!isPasswordCorrect) {
             return res.status(401).json({
                 status: "error",
                 message: "Password Incorrect."
