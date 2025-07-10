@@ -12,6 +12,11 @@ export const addProduct = async (req: Request, res: Response): Promise<Response>
                     message: 'name, description, urlImage and categoryId are required.'
                  });
             }
+            // Verificar si ya existe un producto con el mismo nombre
+            const existing = await Product.findOne({ where: { name } });
+            if (existing) {
+            return res.status(400).json({ message: 'Ya existe un producto con ese nombre.' });
+            }
 
             //Creamos el producto
             const newProduct = await Product.create({name,description,urlImage,categoryId});
