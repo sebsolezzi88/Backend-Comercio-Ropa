@@ -111,6 +111,7 @@ export const getCategories = async (req:Request,res:Response):Promise<Response> 
         
         return res.status(201).json({
                 status: "success",
+                message: "Categories Found.",
                 categories: categories
         });
 
