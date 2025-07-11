@@ -65,7 +65,7 @@ export const getProducts = async (req: Request, res: Response): Promise<Response
             
             return res.status(200).json({
                     status: "success",
-                    message: "Product created.",
+                    message: "Products Found.",
                     products: products
             });
 
