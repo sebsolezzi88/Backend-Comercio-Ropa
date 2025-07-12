@@ -89,14 +89,11 @@ export const updateVariant = async (req: Request, res: Response): Promise<Respon
 
         try {
            
-            const id = req.params.id;
-            const {productId,size,stock,price} = req.body;
+            
+            const {id,productId,size,stock,price} = req.body;
 
-            if (!id) {
-              return res.status(400).json({ status: 'error', message: 'Id is required' });
-            }
 
-            if(!productId || !size || !stock || !price){
+            if(!id || !productId || !size || !stock || !price){
                 return res.status(400).json({ 
                     status: 'error', 
                     message: 'productId, size, stock and price are required.'
@@ -110,7 +107,6 @@ export const updateVariant = async (req: Request, res: Response): Promise<Respon
                 return res.status(404).json({ status: 'error', message: 'Product variant not found' });
             }
 
-            productVariantExist.productId = productId;
             productVariantExist.stock = stock;
             productVariantExist.size = size;
             productVariantExist.price = price;
