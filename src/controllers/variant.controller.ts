@@ -178,14 +178,15 @@ export const getVariantsByProduct = async (req: Request, res: Response): Promise
     });
 
     if (!variants.length) {
-      return res.status(404).json({
-        status: "error",
+      return res.status(200).json({
+        status: "success",
         message: "No variants found for this product.",
       });
     }
 
     return res.status(200).json({
       status: "success",
+      message: "Variants found for this product.",
       variants,
     });
   } catch (error) {
