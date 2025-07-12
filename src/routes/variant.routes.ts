@@ -8,7 +8,7 @@ const router = Router();
 
 router.post('/', verifyToken, addVariant); // Crear una variante
 router.get('/:id', getVariant); // Obtener una variante por ID
-router.put('/:id', verifyToken, updateVariant); // Actualizar variante
+router.put('/', verifyToken, updateVariant); // Actualizar variante
 router.delete('/:id', verifyToken, deleteVariant); // Eliminar variante
 router.get('/product/:productId', getVariantsByProduct); // Variantes de un producto
 
