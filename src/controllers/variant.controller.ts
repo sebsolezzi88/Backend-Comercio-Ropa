@@ -25,13 +25,31 @@ export const addVariant = async (req: Request, res: Response): Promise<Response>
                     productVariant: newProductVariant
             });
             
-       } catch (error) {
-            return res.status(500).json({
-                    status: "error",
-                    message: "Server Error.",
-                    error
-            });
-       }
+       } catch (error: unknown) {
+      // Primero verificamos que error es un objeto y tiene propiedad 'name'
+      if (
+        typeof error === 'object' && 
+        error !== null && 
+        'name' in error && 
+        typeof (error as any).name === 'string'
+      ) {
+        if ((error as any).name === 'SequelizeUniqueConstraintError') {
+          console.log('Ya existe una variante con ese producto y tamaño.');
+          return res.status(500).json({
+            status: "error",
+            message: "Ya existe una variante con ese producto y tamaño",
+            error
+          });
+        }
+      }
+
+      // Si no entra en el if anterior, manejamos otros errores
+      return res.status(500).json({
+        status: "error",
+        message: "Server Error.",
+        error
+      });
+    }
 }
 
 export const getVariant = async (req: Request, res: Response): Promise<Response> =>{
