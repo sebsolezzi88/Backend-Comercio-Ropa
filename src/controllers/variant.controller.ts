@@ -1,5 +1,6 @@
 import { Request,Response } from "express";
 import ProductVariant from "../models/ProductVariant";
+import OrderItem from "../models/OrderItem";
 
 
 
@@ -138,6 +139,16 @@ export const deleteVariant = async (req: Request, res: Response): Promise<Respon
 
             if (!id) {
               return res.status(400).json({ status: 'error', message: 'Id is required' });
+            }
+
+            /* No permitir eliminar si hay órdenes relacionadas  */
+            const count = await OrderItem.count({ where: { productVariantId: id } });
+
+            if (count > 0) {
+              return res.status(400).json({
+                status: 'error',
+                message: 'You cannot delete this variant because it has already been used in an order.',
+              });
             }
 
             //Buscamos el producto variante
